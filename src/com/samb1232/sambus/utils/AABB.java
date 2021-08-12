@@ -2,7 +2,7 @@ package com.samb1232.sambus.utils;
 
 import com.samb1232.sambus.entity.Entity;
 
-public class AABB {
+public class AABB {// Axis aligned bounding boxes
 
     private Vector2f pos;
     private Entity e;
@@ -87,13 +87,13 @@ public class AABB {
     }
 
     public boolean collides(AABB bBox) {
-        float ax = ((pos.getWorldVar().x + (xOffset)) + (w / 2));
-        float ay = ((pos.getWorldVar().y + (yOffset)) + (h / 2));
-        float bx = ((pos.getWorldVar().x + (bBox.xOffset / 2)) + (w / 2));
-        float by = ((pos.getWorldVar().y + (bBox.yOffset / 2)) + (h / 2));
+        float ax = ((pos.getWorldVar().x + xOffset) + (this.w / 2));
+        float ay = ((pos.getWorldVar().y + yOffset) + (this.h / 2));
+        float bx = ((bBox.pos.getWorldVar().x + (bBox.xOffset)) + (bBox.getWidth() / 2));
+        float by = ((bBox.pos.getWorldVar().y + (bBox.yOffset)) + (bBox.getHeight() / 2));
 
-        if (Math.abs(ax - bx) < (this.w / 2) + (bBox.w / 2)) {
-            if (Math.abs(ay - by) < (this.h / 2) + (bBox.h / 2)) {
+        if (Math.abs(ax - bx) < ((this.w + bBox.getWidth()) / 2)) {
+            if (Math.abs(ay - by) < ((this.h + bBox.getHeight()) / 2)) {
                 return true;
             }
         }
@@ -102,12 +102,19 @@ public class AABB {
     }
 
     public boolean colCircleBox(AABB aBox) {
-        float cx = (float) ((pos.getWorldVar().x + r - e.getSize()) / Math.sqrt(2));
-        float cy = (float) ((pos.getWorldVar().y + r - e.getSize()) / Math.sqrt(2));
 
-        float xDelta = cx - Math.max(aBox.getPos().getWorldVar().x + (aBox.getWidth() / 2), Math.min(cx, aBox.pos.getWorldVar().x));
-        float yDelta = cy - Math.max(aBox.getPos().getWorldVar().y + (aBox.getWidth() / 2), Math.min(cy, aBox.pos.getWorldVar().y));
+        float dx = Math.max(aBox.getPos().getWorldVar().x + aBox.getXOffset(), Math.min(pos.getWorldVar().x + (r / 2),
+                aBox.getPos().getWorldVar().x + aBox.getXOffset() + aBox.getWidth()));
+        float dy = Math.max(aBox.getPos().getWorldVar().y + aBox.getYOffset(), Math.min(pos.getWorldVar().y + (r / 2),
+                aBox.getPos().getWorldVar().y + aBox.getYOffset() + aBox.getHeight()));
 
-        return (xDelta * xDelta + yDelta * yDelta) < ((this.r * this.r / 2));
+        dx = pos.getWorldVar().x + (r / 2) - dx;
+        dy = pos.getWorldVar().y + (r / 2) - dy;
+
+        if (Math.sqrt(dx * dx + dy * dy) < (r / 2)) {
+            return true;
+        }
+
+        return false;
     }
 }

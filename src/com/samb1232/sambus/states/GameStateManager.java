@@ -27,23 +27,24 @@ public class GameStateManager {
         states.add(new PlayState(this));
     }
 
-//    public void pop(int state) { Нужен для смены режимов игры. Пока что в разработке...
-//        states.remove(state);
-//    }
+    public void pop(int state) { //Нужен для смены режимов игры. Пока что в разработке...
+        states.remove(state);
+    }
 
-//    public void add(int state) {
-//        switch (state) { //а что если этот state уже есть в states...
-//            case PLAY -> states.add(new PlayState(this));
+    public void add(int state) {
+        switch (state) { //а что если этот state уже есть в states...
+            case PLAY -> states.add(new PlayState(this));
 //            case MENU -> states.add(new MenuState(this));
 //            case PAUSE -> states.add(new PauseState(this));
 //            case GAME_OVER -> states.add(new GameOverState(this));
-//        }
-//    }
+        }
+    }
 
-//    public void addAndPop(int state) {
-//        pop(0);
-//        add(state);
-//    }
+    public void addAndPop(int state) {
+        pop(0);
+        add(state);
+    }
+
     public void update() {
         Vector2f.setWorldVar(map.x, map.y);
 
@@ -54,8 +55,13 @@ public class GameStateManager {
 
 
     public void input(MouseHandler mouse, KeyHandler key) {
+        key.escape.tick();
         for (GameState state : states) {
             state.input(mouse, key);
+        }
+
+        if (key.escape.clicked) {
+            System.exit(0);
         }
 
     }

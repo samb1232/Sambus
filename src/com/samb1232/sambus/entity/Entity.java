@@ -10,17 +10,11 @@ import java.awt.image.BufferedImage;
 
 public abstract class Entity {
 
-    protected final int UP = 3;
-    protected final int DOWN = 2;
-    protected final int RIGHT = 0;
-    protected final int LEFT = 1;
-    protected final int FALLEN = 4;
-
     protected Animation anim;
     protected Sprite sprite;
     protected Vector2f pos;
     protected int size;
-    protected int currentAnimation;
+    protected PersonStates currentAnimation;
 
     protected boolean up;
     protected boolean down;
@@ -28,8 +22,13 @@ public abstract class Entity {
     protected boolean left;
     protected boolean fallen;
     protected boolean attack;
-//    protected int attackSpeed;
-//    protected int attackDuration;
+
+    public boolean xCol = false;
+    public boolean yCol = false;
+
+
+    protected int attackSpeed;
+    protected int attackDuration;
 
     protected float dx;
     protected float dy;
@@ -50,10 +49,11 @@ public abstract class Entity {
         this.size = size;
 
         bounds = new AABB(orgin, size, size);
-        hitBounds = new AABB(new Vector2f(orgin.x + (size / 2), orgin.y), size, size);
+        hitBounds = new AABB(orgin, size, size);
+        hitBounds.setXOffset(size / 2);
 
         anim = new Animation();
-        setAnimation(RIGHT, sprite.getSpriteArray(RIGHT), 10);
+        setAnimation(PersonStates.RIGHT, sprite.getSpriteArray(PersonStates.RIGHT.getSideNumber()), 10);
 
         tc = new TileCollision(this);
     }
@@ -70,7 +70,23 @@ public abstract class Entity {
         return bounds;
     }
 
-    public void setAnimation(int side, BufferedImage[] frames, int delay) {
+    public float getDeAcc() {
+        return deAcc;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public float getDx() {
+        return dx;
+    }
+
+    public float getDy() {
+        return dy;
+    }
+
+    public void setAnimation(PersonStates side, BufferedImage[] frames, int delay) {
         currentAnimation = side;
         anim.setFrames(frames);
         anim.setDelay(delay);
@@ -98,47 +114,47 @@ public abstract class Entity {
 
     public void animate() {
         if (up) {
-            if (currentAnimation != UP || anim.getDelay() == -1) {
-                setAnimation(UP, sprite.getSpriteArray(UP), 5);
+            if (currentAnimation != PersonStates.UP || anim.getDelay() == -1) {
+                setAnimation(PersonStates.UP, sprite.getSpriteArray(PersonStates.UP.getSideNumber()), 5);
             }
         } else if (down) {
-            if (currentAnimation != DOWN || anim.getDelay() == -1) {
-                setAnimation(DOWN, sprite.getSpriteArray(DOWN), 5);
+            if (currentAnimation != PersonStates.DOWN || anim.getDelay() == -1) {
+                setAnimation(PersonStates.DOWN, sprite.getSpriteArray(PersonStates.DOWN.getSideNumber()), 5);
             }
         } else if (right) {
-            if (currentAnimation != RIGHT || anim.getDelay() == -1) {
-                setAnimation(RIGHT, sprite.getSpriteArray(RIGHT), 5);
+            if (currentAnimation != PersonStates.RIGHT || anim.getDelay() == -1) {
+                setAnimation(PersonStates.RIGHT, sprite.getSpriteArray(PersonStates.RIGHT.getSideNumber()), 5);
 
             }
         } else if (left) {
-            if (currentAnimation != LEFT || anim.getDelay() == -1) {
-                setAnimation(LEFT, sprite.getSpriteArray(LEFT), 5);
+            if (currentAnimation != PersonStates.LEFT || anim.getDelay() == -1) {
+                setAnimation(PersonStates.LEFT, sprite.getSpriteArray(PersonStates.LEFT.getSideNumber()), 5);
             }
         }else if(fallen) {
-            if (currentAnimation != FALLEN || anim.getDelay() == -1) {
-                setAnimation(FALLEN, sprite.getSpriteArray(FALLEN), 15);
+            if (currentAnimation != PersonStates.FALLEN || anim.getDelay() == -1) {
+                setAnimation(PersonStates.FALLEN, sprite.getSpriteArray(PersonStates.FALLEN.getSideNumber()), 15);
             }
 
         } else {
-            setAnimation(currentAnimation, sprite.getSpriteArray(currentAnimation), -1);
+            setAnimation(currentAnimation, sprite.getSpriteArray(currentAnimation.getSideNumber()), -1);
         }
     }
 
     public void setHitboxDirection() {
         if (up) {
-            hitBounds.setXOffset(-size / 2);
+            hitBounds.setXOffset(0);
             hitBounds.setYOffset(-size / 2);
         }
         if (down) {
-            hitBounds.setXOffset(-size / 2);
+            hitBounds.setXOffset(0);
             hitBounds.setYOffset(size / 2);
         }
         if (right) {
-            hitBounds.setXOffset(-size);
+            hitBounds.setXOffset(size / 2);
             hitBounds.setYOffset(0);
         }
         if (left) {
-            hitBounds.setXOffset(0);
+            hitBounds.setXOffset(-size / 2);
             hitBounds.setYOffset(0);
         }
     }

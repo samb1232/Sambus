@@ -1,6 +1,7 @@
 package com.samb1232.sambus.tiles;
 
 import com.samb1232.sambus.graphics.Sprite;
+import com.samb1232.sambus.utils.Camera;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,12 +23,18 @@ public class TileManager {
         tm = new ArrayList<TileMap>();
     }
 
-    public TileManager(String path) {
+    public TileManager(String path, Camera cam) {
         tm = new ArrayList<TileMap>();
-        addTileMap(path, 64, 64);
+        addTileMap(path, 64, 64, cam);
     }
 
-    private void addTileMap(String path, int blockWidth, int blockHeight) {
+    public TileManager(String path, int blockWith, int blockHeight, Camera cam) {
+        tm = new ArrayList<TileMap>();
+        addTileMap(path, blockWith, blockHeight, cam);
+    }
+
+
+    private void addTileMap(String path, int blockWidth, int blockHeight, Camera cam) {
         String imagePath;
 
         int width = 0;
@@ -78,9 +85,11 @@ public class TileManager {
                     tm.add(new TileMapObj(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 }
 
+                cam.setLimit(width * blockWidth, height * blockHeight);
+
             }
         } catch (Exception e) {
-            System.err.println("ERROR - TILEMANAGER: can not read tilemap");
+            System.err.println("ERROR - TILE MANAGER: can not read tilemap");
         }
 
     }

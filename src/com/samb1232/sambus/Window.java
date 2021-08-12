@@ -10,6 +10,8 @@ public class Window extends JFrame {
 
         setContentPane(new GamePanel(1280, 720));
 
+        setIgnoreRepaint(true);
+
         pack();
         setLocationRelativeTo(null);
         setVisible(true);

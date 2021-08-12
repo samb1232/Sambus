@@ -39,7 +39,7 @@ public class TileCollision {
         if (block.isInside(bounds)) {
             e.setFallen(true);
             return false;
-        } else if ((nextXt == xt + 1) || (nextXt == yt + 1)) {
+        } else if ((nextXt == xt + 1) || (nextXt == yt + 1) || (nextYt == yt - 1) || (nextXt == xt - 1)) {
             if (TileMapObj.tmo_blocks.containsKey(nextXt + "," + nextYt)) {
                 if (bounds.getPos().x > block.getPos().x) {
                     e.setFallen(true);
